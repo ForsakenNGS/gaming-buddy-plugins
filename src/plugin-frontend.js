@@ -21,12 +21,28 @@ class PluginFrontend extends PluginBase {
   }
 
   /**
+   * Clear all hooks registered on this plugin
+   * (Usually done before unloading a plugin)
+   */
+  clearAllHooks() {
+    this.clearRenderHooks();
+    this.clearPageHooks();
+  }
+
+  /**
    * Clear all hooks that plug into rendering elements
    * (Usually done when loading a new page)
    */
   clearRenderHooks() {
     this.removeAllListeners("element.render");
     this.removeAllListeners("element.rendered");
+  }
+
+  /**
+   * Clear all hooks that plug into page navigation
+   */
+  clearPageHooks() {
+    this.removeAllListeners("pages.change");
   }
 
   /**
