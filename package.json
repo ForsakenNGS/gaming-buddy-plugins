@@ -1,7 +1,10 @@
 {
   "name": "@forsaken87/gaming-buddy-plugins",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "main.js",
   "author": "Jens N",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "@forsaken87/gaming-buddy": "^1.0.1"
+  }
 }
