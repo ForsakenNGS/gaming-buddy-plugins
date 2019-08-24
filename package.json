@@ -1,10 +1,17 @@
 {
   "name": "@forsaken87/gaming-buddy-plugins",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "main.js",
   "author": "Jens N",
   "license": "GPL-3.0",
   "devDependencies": {
     "@forsaken87/gaming-buddy": "^1.0.0"
+  },
+  "dependencies": {
+    "twig": "^1.13.3",
+    "fast-xml-parser": "^3.12.19",
+    "he": "^1.2.0",
+    "jimp": "^0.6.4",
+    "tesseract.js": "^2.0.0-alpha.11"
   }
 }
