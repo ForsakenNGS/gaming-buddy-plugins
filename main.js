@@ -1,5 +1,6 @@
 "use strict";
 
+module.exports.Config = require("./src/config.js");
 module.exports.PluginFrontend = require("./src/plugin-frontend.js");
 module.exports.PluginBackend = require("./src/plugin-backend.js");
 module.exports.PluginPageNav = require("./src/plugin-page-nav.js");
