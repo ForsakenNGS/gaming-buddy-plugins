@@ -1,44 +1,40 @@
 // Nodejs dependencies
 const fs = require('fs');
 const path = require('path');
-const fork = require('child_process').fork;
+const { createWorker, createScheduler } = require('tesseract.js');
 
 const cacheDir = path.resolve("./cache/tesseract");
 
 class TesseractCluster {
 
   constructor(threads) {
-    this.threads = [];
+    this.scheduler = createScheduler();
     this.queue = [];
-    while (threads-- > 0) {
-      this.addWorker();
+    this.threadIndex = 0;
+    while (this.threadIndex < threads) {
+      this.addWorker(this.threadIndex++);
     }
   }
 
-  addWorker() {
-    let threadCache = path.join(cacheDir, "thread"+this.threads.length);
+  addWorker(threadIndex) {
+    let threadCache = path.join(cacheDir, "thread"+threadIndex);
     if (!fs.existsSync(threadCache)) {
       fs.mkdirSync(threadCache, { recursive: true });
     }
-    let thread = {
-      job: null,
-      process: fork("./src/tesseract-thread.js", [ threadCache ], { silent: true })
-    };
-    thread.process.stdout.unpipe();
-    thread.process.on("message", (message) => {
-      let result = message.shift();
-      switch(result) {
-        case "success":
-          thread.job.resolve(...message);
-          break;
-        case "error":
-          thread.job.reject(...message);
-          break;
+    let worker = createWorker({
+      cachePath: threadCache,
+      //cacheMethod: "none",
+      errorHandler: (error) => {
+        console.error(error);
       }
-      thread.job = null;
-      this.checkQueue();
     });
-    this.threads.push(thread);
+    (async() => {
+      await worker.load();
+      await worker.loadLanguage("eng+lat+rus+kor");
+      await worker.initialize("eng+lat+rus+kor");
+      this.scheduler.addWorker(worker);
+      this.checkQueue();
+    })();
   }
 
   addJob(image, langs, params) {
@@ -47,27 +43,28 @@ class TesseractCluster {
         image: image, langs: langs, params: params,
         resolve: resolve, reject: reject
       };
-      // Check for available threads
-      for (let i = 0; i < this.threads.length; i++) {
-        if (this.threads[i].job === null) {
-          this.threads[i].job = job;
-          this.threads[i].process.send(["recognize", image.toString("base64"), langs, params]);
-          return;
-        }
+      if (this.scheduler.getNumWorkers() == 0) {
+        // No  workers ready yet, queue task
+        this.queue.push(job)
+      } else {
+        // Add job to scheduler
+        this.scheduler.addJob('recognize', image, params).then((...result) => {
+          job.resolve(...result);
+        }).catch((...result) => {
+          job.reject(...result);
+        });
       }
-      // No free thread, queue task
-      this.queue.push(job)
     });
-
   }
 
   checkQueue() {
     if (this.queue.length > 0) {
       let nextJob = this.queue.shift();
-      this.addJob(nextJob.image, nextJob.langs, nextJob.params).then((result) => {
-        nextJob.resolve(result);
-      }).catch((error) => {
-        nextJob.reject(error);
+      // Add job to scheduler
+      this.scheduler.addJob('recognize', nextJob.image, nextJob.params).then((...result) => {
+        nextJob.resolve(...result);
+      }).catch((...result) => {
+        nextJob.reject(...result);
       });
     }
   }

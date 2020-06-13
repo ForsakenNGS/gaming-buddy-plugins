@@ -1,6 +1,6 @@
 // Nodejs dependencies
 const Jimp = require('jimp');
-const {TesseractWorker, TesseractUtils, ...TesseractTypes} = require('tesseract.js');
+const {TesseractUtils, ...TesseractTypes} = require('tesseract.js');
 
 // Local classes
 const Filter = require('../filter.js');
@@ -54,12 +54,6 @@ class FilterOcr extends Filter {
           case "SPARSE_TEXT_OSD":
             this.attributes.pagesegMode = TesseractTypes.PSM.SPARSE_TEXT_OSD;
             break;
-          case "RAW_LINE":
-            this.attributes.pagesegMode = TesseractTypes.PSM.RAW_LINE;
-            break;
-          case "COUNT":
-            this.attributes.pagesegMode = TesseractTypes.PSM.COUNT;
-            break;
         }
       } else {
         this.attributes.pagesegMode = TesseractTypes.PSM.SINGLE_LINE;
@@ -70,7 +64,7 @@ class FilterOcr extends Filter {
       image.greyscale().getBufferAsync(Jimp.MIME_PNG).then((buffer) => {
         return ocrCluster.recognize(buffer, this.attributes.language, tessParams);
       }).then((result) => {
-        this.layout.extra.ocrResult = result;
+        this.layout.extra.ocrResult = result.data;
         resolve(image);
       }).catch((error) => {
         reject(error);

@@ -47,14 +47,14 @@ class Config {
 
   cleanupStructure() {
     // Sections
-    if (!Array.isArray(this.structure.config.section)) {
-      this.structure.config.section = [ this.structure.config.section ];
+    if (!Array.isArray(this.structure.config[0].section)) {
+      this.structure.config[0].section = [ this.structure.config[0].section ];
     }
-    for (let i = 0; i < this.structure.config.section.length; i++) {
-      if (this.structure.config.section[i].attr.hasOwnProperty('@_name') && this.structure.config.section[i].attr.hasOwnProperty('@_default')) {
+    for (let i = 0; i < this.structure.config[0].section.length; i++) {
+      if (this.structure.config[0].section[i].attr.hasOwnProperty('@_name') && this.structure.config[0].section[i].attr.hasOwnProperty('@_default')) {
         // Section default value
-        let sectionName = this.structure.config.section[i].attr['@_name'];
-        let defaultValue = this.structure.config.section[i].attr['@_default'];
+        let sectionName = this.structure.config[0].section[i].attr['@_name'];
+        let defaultValue = this.structure.config[0].section[i].attr['@_default'];
         switch (defaultValue) {
           case "true":
             this.values[sectionName] = true;
@@ -67,14 +67,14 @@ class Config {
             break;
         }
       }
-      if (!Array.isArray(this.structure.config.section[i].value)) {
-        this.structure.config.section[i].value = [ this.structure.config.section[i].value ];
+      if (!Array.isArray(this.structure.config[0].section[i].value)) {
+        this.structure.config[0].section[i].value = [ this.structure.config[0].section[i].value ];
       }
-      for (let v = 0; v < this.structure.config.section[i].value.length; v++) {
+      for (let v = 0; v < this.structure.config[0].section[i].value.length; v++) {
         // Options
-        let valueName = this.structure.config.section[i].value[v].attr['@_name'];
+        let valueName = this.structure.config[0].section[i].value[v].attr['@_name'];
         if (!this.values.hasOwnProperty(valueName)) {
-          let defaultValue = this.structure.config.section[i].value[v].attr['@_default'];
+          let defaultValue = this.structure.config[0].section[i].value[v].attr['@_default'];
           switch (defaultValue) {
             case "true":
               this.values[valueName] = true;
@@ -87,10 +87,10 @@ class Config {
               break;
           }
         }
-        switch (this.structure.config.section[i].value[v].attr['@_type']) {
+        switch (this.structure.config[0].section[i].value[v].attr['@_type']) {
           case "select":
-            if (!Array.isArray(this.structure.config.section[i].value[v].option)) {
-              this.structure.config.section[i].value[v].option = [ this.structure.config.section[i].value[v].option ];
+            if (!Array.isArray(this.structure.config[0].section[i].value[v].option)) {
+              this.structure.config[0].section[i].value[v].option = [ this.structure.config[0].section[i].value[v].option ];
             }
             break;
         }
@@ -104,10 +104,10 @@ class Config {
    * @returns {null|*}
    */
   getStructureSection(name) {
-    for (let i = 0; i < this.structure.config.section.length; i++) {
-      if (this.structure.config.section[i].attr.hasOwnProperty('@_name') &&
-        (this.structure.config.section[i].attr['@_name'] === name)) {
-        return this.structure.config.section[i];
+    for (let i = 0; i < this.structure.config[0].section.length; i++) {
+      if (this.structure.config[0].section[i].attr.hasOwnProperty('@_name') &&
+        (this.structure.config[0].section[i].attr['@_name'] === name)) {
+        return this.structure.config[0].section[i];
       }
     }
     return null;
@@ -119,11 +119,11 @@ class Config {
    * @returns {null|*}
    */
   getStructureValue(name) {
-    for (let i = 0; i < this.structure.config.section.length; i++) {
-      for (let v = 0; v < this.structure.config.section[i].value.length; v++) {
-        if (this.structure.config.section[i].value[v].attr.hasOwnProperty('@_name') &&
-          (this.structure.config.section[i].value[v].attr['@_name'] === name)) {
-          return this.structure.config.section[i].value[v];
+    for (let i = 0; i < this.structure.config[0].section.length; i++) {
+      for (let v = 0; v < this.structure.config[0].section[i].value.length; v++) {
+        if (this.structure.config[0].section[i].value[v].attr.hasOwnProperty('@_name') &&
+          (this.structure.config[0].section[i].value[v].attr['@_name'] === name)) {
+          return this.structure.config[0].section[i].value[v];
         }
       }
     }

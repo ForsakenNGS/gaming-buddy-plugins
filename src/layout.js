@@ -173,7 +173,7 @@ class Layout {
       }
       for (let i = 0; i < layout.include.length; i++) {
         this.children.push(
-          this.constructor.fromXmlFile( path.resolve(this.basePath, layout.include[i].attr["@_file"]), {}, this, this.basePath )
+          this.constructor.fromXmlFile( path.resolve(this.basePath, layout.include[i].attr["@_file"]), {}, this, this.basePath )[0]
         );
       }
     }
