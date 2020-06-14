@@ -36,7 +36,7 @@ class PluginBackend extends PluginBase {
       }
       return;
     }
-    image.getBufferAsync(Jimp.MIME_PNG).then((buffer) => {
+    image.clone().scale(2.0).getBufferAsync(Jimp.MIME_PNG).then((buffer) => {
       this.app.sendMessage("core", "debug.layouts.add", {
         id: layout.id,
         image: buffer.toString("base64"),
