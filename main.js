@@ -2,6 +2,7 @@
 
 module.exports.Config = require("./src/config.js");
 module.exports.PluginFrontend = require("./src/plugin-frontend.js");
+module.exports.PluginWebapp = require("./src/plugin-webapp.js");
 module.exports.PluginBackend = require("./src/plugin-backend.js");
 module.exports.PluginPageNav = require("./src/plugin-page-nav.js");
 module.exports.ImageColor = require("./src/image-color.js");

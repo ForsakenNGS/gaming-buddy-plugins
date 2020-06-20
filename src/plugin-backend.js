@@ -75,6 +75,12 @@ class PluginBackend extends PluginBase {
     this.app.sendMessage("core", "debug.layouts.done");
   }
 
+  addPageNav(ident, title, icon = null, visible = true) {
+    let page = super.addPageNav(ident, title, icon, visible);
+    this.sendWebappMessage("pages", this.pages);
+    return page;
+  }
+
   /**
    * Handle messages received from the frontend
    * @param {string} type
@@ -89,12 +95,34 @@ class PluginBackend extends PluginBase {
   }
 
   /**
+   * Handle messages received from the frontend
+   * @param {string} type
+   * @param {*} parameters
+   */
+  handleWebappMessage(type, parameters) {
+    switch (type) {
+      default:
+        super.handleMessage(type, parameters);
+        break;
+    }
+  }
+
+  /**
    * Send messages to the frontend
    * @param {string} type
    * @param {*} parameters
    */
   sendMessage(type, ...parameters) {
     this.app.sendMessage(this.name, type, ...parameters);
+  }
+
+  /**
+   * Send messages to the frontend
+   * @param {string} type
+   * @param {*} parameters
+   */
+  sendWebappMessage(type, ...parameters) {
+    this.app.sendWebappMessage(this.name, type, ...parameters);
   }
 
   /**
@@ -156,6 +184,13 @@ class PluginBackend extends PluginBase {
    */
   setFrontendPage(page) {
     this.sendMessage("page", page);
+  }
+
+  /**
+   * Change the plugins frontend page
+   */
+  setWebappPage(page) {
+    this.sendWebappMessage("page", page);
   }
 
   /**
